@@ -8,6 +8,7 @@ reddit = praw.Reddit(
     user_agent="tennis-sentiment-analysis"
 )
 
+
 def get_reddit_comments(query, limit=50, year=None):
     results = []
     subreddit = reddit.subreddit("tennis")
@@ -23,6 +24,9 @@ def get_reddit_comments(query, limit=50, year=None):
 
         submission.comments.replace_more(limit=0)
         for comment in submission.comments[:10]:
+            comment_year = datetime.utcfromtimestamp(comment.created_utc).year
+            if year and comment_year != year:
+                continue
             results.append({
                 "text": comment.body,
                 "date": datetime.utcfromtimestamp(comment.created_utc).date()
